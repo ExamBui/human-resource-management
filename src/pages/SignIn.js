@@ -36,7 +36,7 @@ export default class SignIn extends Component {
                 lg={{ span: 6, offset: 2 }}
                 md={{ span: 12 }}
               >
-                <Title className="mb-15">Sign In</Title>
+                <Title className="mb-15">Đăng nhập</Title>
                 <Title className="font-regular text-muted" level={5}>
                   Nhập email và mật khẩu của bạn để đăng nhập
                 </Title>
