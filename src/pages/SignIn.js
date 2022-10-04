@@ -10,7 +10,7 @@ import {
   Input,
   Switch,
 } from "antd";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../assets/images/sign_in.jpg";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../service/firebase";
 import Notification from "../components/Notification/Notification";
