@@ -8,8 +8,19 @@ import Main from "./components/layout/Main";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
+// import { useEffect } from "react";
 
-function App() {  
+function App() {
+  // const history = useHistory();
+
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     if(localStorage.getItem("access-token")) {
+  //       history.push("/sign-in");
+  //     }
+  //   }
+  // }, [history])
+  
   return (
     <div className="App">
       <Switch>

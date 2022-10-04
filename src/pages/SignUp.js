@@ -1,85 +1,98 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Layout,
   Button,
   Card,
   Form,
-  Input,
+  Input
 } from "antd";
+import { Link, useHistory } from "react-router-dom";
+import openNotificationWithIcon from "../components/Notification/Notification"
 
-import { Link } from "react-router-dom";
+// Firebase
+import { auth } from "../service/firebase";
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 const { Content } = Layout;
-export default class SignUp extends Component {
-  render() {
-    const onFinish = (values) => {
-      console.log("Success:", values);
-    };
 
-    const onFinishFailed = (errorInfo) => {
-      console.log("Failed:", errorInfo);
-    };
-    return (
-      <>
-        <div className="layout-default ant-layout layout-sign-up">
-          <Content className="p-0">
+function SignUp() {
+  const history = useHistory();
 
-            <Card
-              className="card-signup header-solid h-full ant-card pt-0"
-              title={<h5>Register With</h5>}
-              bordered="false"
+
+  const onFinish = async (values) => {
+    const { email, password } = values;
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      const user = res.user;
+      if (user) {
+        openNotificationWithIcon('success', 'Đăng ký', 'Đăng ký thành công!');
+        history.push(`/sign-in`);
+      } else {
+        openNotificationWithIcon('error', 'Đăng ký', 'Đăng ký không thành công!');
+      }
+    } catch (err) {
+      openNotificationWithIcon('error', 'Đăng ký', 'Đăng ký không thành công!');
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <>
+      <div className="layout-default ant-layout layout-sign-up">
+        <Content className="p-0">
+
+          <Card
+            className="card-signup header-solid h-full ant-card pt-0"
+            title={<h5>Register With</h5>}
+            bordered="false"
+          >
+            <Form
+              name="basic"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              className="row-col"
             >
-              <Form
-                name="basic"
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                className="row-col"
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                ]}
               >
-                <Form.Item
-                  name="Name"
-                  rules={[
-                    { required: true, message: "Please input your username!" },
-                  ]}
+                <Input placeholder="Email" />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                ]}
+              >
+                <Input placeholder="Password" />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  style={{ width: "100%" }}
+                  type="primary"
+                  htmlType="submit"
                 >
-                  <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item
-                  name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                  ]}
-                >
-                  <Input placeholder="Email" />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                  ]}
-                >
-                  <Input placeholder="Password" />
-                </Form.Item>
-                <Form.Item>
-                  <Button
-                    style={{ width: "100%" }}
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    SIGN UP
-                  </Button>
-                </Form.Item>
-              </Form>
-              <p className="font-semibold text-muted text-center">
-                Already have an account?{" "}
-                <Link to="/sign-in" className="font-bold text-dark">
-                  Sign In
-                </Link>
-              </p>
-            </Card>
-          </Content>
-        </div>
-      </>
-    );
-  }
+                  SIGN UP
+                </Button>
+              </Form.Item>
+            </Form>
+            <p className="font-semibold text-muted text-center">
+              Already have an account?{" "}
+              <Link to="/sign-in" className="font-bold text-dark">
+                Sign In
+              </Link>
+            </p>
+          </Card>
+        </Content>
+      </div>
+    </>
+  );
 }
+
+export default SignUp;
