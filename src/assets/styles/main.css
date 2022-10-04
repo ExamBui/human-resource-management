@@ -2147,12 +2147,12 @@ body {
 }
 .sign-img img {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
   display: block;
 }
 .layout-signin {
-  background: #fff;
+  background: #FCFCFC;
 }
 .layout-signin footer.ant-layout-footer svg {
   width: 18px;

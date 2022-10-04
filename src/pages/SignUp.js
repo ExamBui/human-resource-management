@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Layout,
   Button,
@@ -18,12 +18,16 @@ const { Content } = Layout;
 function SignUp() {
   const history = useHistory();
 
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const onFinish = async (values) => {
     const { email, password } = values;
+    setIsLoading(true);
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const user = res.user;
+      setIsLoading(false);
       if (user) {
         openNotificationWithIcon('success', 'Đăng ký', 'Đăng ký thành công!');
         history.push(`/sign-in`);
@@ -31,6 +35,7 @@ function SignUp() {
         openNotificationWithIcon('error', 'Đăng ký', 'Đăng ký không thành công!');
       }
     } catch (err) {
+      setIsLoading(false);
       openNotificationWithIcon('error', 'Đăng ký', 'Đăng ký không thành công!');
     }
   };
@@ -43,10 +48,9 @@ function SignUp() {
     <>
       <div className="layout-default ant-layout layout-sign-up">
         <Content className="p-0">
-
           <Card
             className="card-signup header-solid h-full ant-card pt-0"
-            title={<h5>Register With</h5>}
+            title={<h5>Đăng ký</h5>}
             bordered="false"
           >
             <Form
@@ -59,7 +63,11 @@ function SignUp() {
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: "Please input your email!" },
+                  { required: true, message: "Vui lòng nhập email của bạn!"},
+                  {
+                      type: 'email',
+                      message: 'Định dạng email không đúng',
+                    },
                 ]}
               >
                 <Input placeholder="Email" />
@@ -67,25 +75,26 @@ function SignUp() {
               <Form.Item
                 name="password"
                 rules={[
-                  { required: true, message: "Please input your password!" },
+                  { required: true, message: "Vui lòng nhập password của bạn!"},
                 ]}
               >
                 <Input placeholder="Password" />
               </Form.Item>
               <Form.Item>
                 <Button
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", textTransform: "uppercase" }}
                   type="primary"
                   htmlType="submit"
+                  loading={isLoading}
                 >
-                  SIGN UP
+                  Đăng ký
                 </Button>
               </Form.Item>
             </Form>
             <p className="font-semibold text-muted text-center">
-              Already have an account?{" "}
+              Bạn đã có tài khoản?{" "}
               <Link to="/sign-in" className="font-bold text-dark">
-                Sign In
+                Đăng nhập
               </Link>
             </p>
           </Card>

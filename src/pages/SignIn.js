@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import {
   Layout,
@@ -8,33 +8,37 @@ import {
   Typography,
   Form,
   Input,
-  Switch,
+  // Switch,
 } from "antd";
 import signinbg from "../assets/images/sign_in.jpg";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../service/firebase";
 import Notification from "../components/Notification/Notification";
 
-function onChange(checked) {
-  console.log(`switch to ${checked}`);
-}
+// function onChange(checked) {
+//   console.log(`switch to ${checked}`);
+// }
 const { Title } = Typography;
 const { Content } = Layout;
 
-
 function SignIn() {
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onFinish = (values) => {
     const {email, password} = values;
-
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
     .then((res) => {
+      setIsLoading(false);
       if(res && res?.user?.accessToken) {
+        localStorage.setItem('email', res?.user?.email);
+        localStorage.setItem('access-token', res?.user?.accessToken);
         history.push('/');
       }
     })
     .catch(err => {
+      setIsLoading(false);
       Notification('error', 'Đăng nhập', 'Đăng nhập không thành công!');
     })
   };
@@ -53,7 +57,7 @@ function SignIn() {
               lg={{ span: 6, offset: 2 }}
               md={{ span: 12 }}
             >
-              <Title className="mb-15">Sign In</Title>
+              <Title className="mb-15">Đăng nhập</Title>
               <Title className="font-regular text-muted" level={5}>
                 Nhập email và mật khẩu của bạn để đăng nhập
               </Title>
@@ -69,8 +73,12 @@ function SignIn() {
                   name="email"
                   rules={[
                     {
+                      type: 'email',
+                      message: 'Định dạng email không đúng',
+                    },
+                    {
                       required: true,
-                      message: "Please input your email!",
+                      message: "Vui lòng nhập email của bạn!",
                     },
                   ]}
                 >
@@ -84,35 +92,44 @@ function SignIn() {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: "Vui lòng nhập password của bạn!",
                     },
                   ]}
                 >
                   <Input placeholder="Password" />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   name="remember"
                   className="aligin-center"
                   valuePropName="checked"
+                  style={{
+                    marginBottom: "10px"
+                  }}
                 >
                   <Switch defaultChecked onChange={onChange} />
                   Remember me
-                </Form.Item>
+                </Form.Item> */}
+                <p className="font-semibold text-muted">
+                  <Link to="/forgot-password" className="text-primary">
+                    Quên mật khẩu?
+                  </Link>
+                </p>
 
                 <Form.Item>
                   <Button
                     type="primary"
                     htmlType="submit"
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", fontSize: "13px", textTransform: "uppercase" }}
+                    loading={isLoading}
                   >
-                    SIGN IN
+                    Đăng nhập
                   </Button>
                 </Form.Item>
-                <p className="font-semibold text-muted">
-                  Don't have an account?{" "}
+                <p className="font-semibold text-muted text-center">
+                  Chưa có tài khoản?{" "}
                   <Link to="/sign-up" className="text-dark font-bold">
-                    Sign Up
+                    Đăng ký
                   </Link>
                 </p>
               </Form>
